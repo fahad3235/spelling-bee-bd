@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spelling Bee BD — English Spelling Practice</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <h1 id="appTitle">Spelling Bee BD</h1>
+    <p id="tagline">Listen, spell, win — English spelling practice for Bangladeshi learners.</p>
+  </div>
+  <button id="langBtn" class="lang-btn" type="button">বাংলা</button>
+</header>
+
+<nav class="tabs" role="tablist">
+  <button class="tab active" data-tab="play" type="button" id="tabBtnPlay">Play</button>
+  <button class="tab" data-tab="practice" type="button" id="tabBtnPractice">Practice</button>
+  <button class="tab" data-tab="words" type="button" id="tabBtnWords">Word List</button>
+  <button class="tab" data-tab="scores" type="button" id="tabBtnScores">Scores</button>
+</nav>
+
+<main>
+  <!-- ============ PLAY ============ -->
+  <section id="tab-play" class="panel">
+    <div id="playSetup" class="card">
+      <h2 id="playSetupTitle">Play</h2>
+      <p class="muted" id="roundOfText">Round of 10 words</p>
+      <label class="field">
+        <span id="levelLabel">Level</span>
+        <select id="playLevel">
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+          <option value="mixed">Mixed</option>
+        </select>
+      </label>
+      <button id="playStartBtn" class="primary" type="button">Start Round</button>
+      <p class="muted small" id="pointsNote">Easy 10 · Medium 15 · Hard 20 points, +1 per streak (max +5), hint halves points</p>
+      <div class="how">
+        <h3 id="howTitle">How to Play</h3>
+        <ol>
+          <li id="how1">1. Pick a level and start a round of 10 words. You have 3 lives and 45 seconds per word.</li>
+          <li id="how2">2. Press Listen to hear the word (or Flash Word to see it for 2 seconds), then type its spelling.</li>
+          <li id="how3">3. A wrong answer, a skip, or running out of time costs 1 life. Hints halve the points for that word.</li>
+          <li id="how4">4. Consecutive correct answers build a streak bonus. Beat your best score!</li>
+        </ol>
+      </div>
+    </div>
+
+    <div id="playGame" class="card hidden">
+      <div class="hud">
+        <span id="playProgress">Word 1 of 10</span>
+        <span id="playTimer" class="timer">45s</span>
+      </div>
+      <div class="hud">
+        <span>❤️ <span id="playLives">3</span> <span id="livesLabel">Lives</span></span>
+        <span>⭐ <span id="playScore">0</span> <span id="scoreLabel">Score</span></span>
+        <span>🔥 <span id="playStreak">0</span> <span id="streakLabel">Streak</span></span>
+      </div>
+      <div class="listen-row">
+        <button id="listenBtn" class="primary" type="button">🔊 Listen</button>
+        <button id="flashBtn" class="secondary" type="button">👁 Flash Word</button>
+      </div>
+      <div id="flashWord" class="flash-word hidden"></div>
+      <p id="flashNote" class="muted small hidden">Word flashes for 2 seconds — memorise it, then spell it!</p>
+      <p id="audioNote" class="muted small hidden">No voice available on this device — use Flash Word instead.</p>
+      <button id="hintBtn" class="hint-btn" type="button">💡 Hint (meaning, −50% points)</button>
+      <p id="hintText" class="hint-text hidden"></p>
+      <form id="spellForm">
+        <label class="field">
+          <span id="typeLabel">Type the spelling here…</span>
+          <input id="spellInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"
+                 placeholder="Type the spelling here…" maxlength="30">
+        </label>
+        <div class="btn-row">
+          <button id="submitBtn" class="primary" type="submit">Check Spelling</button>
+          <button id="skipBtn" class="secondary" type="button">Skip (−1 life)</button>
+        </div>
+      </form>
+      <div id="playFeedback" class="feedback hidden"></div>
+      <div class="btn-row">
+        <button id="nextBtn" class="primary hidden" type="button">Next Word →</button>
+        <button id="seeResultsBtn" class="primary hidden" type="button">See Results</button>
+      </div>
+    </div>
+
+    <div id="playResult" class="card hidden">
+      <h2 id="resultTitle">Round Over</h2>
+      <p id="newBest" class="new-best hidden">🎉 New best score!</p>
+      <div class="result-grid">
+        <div><span class="big" id="resultScore">0</span><br><span id="finalScoreLabel">Final Score</span></div>
+        <div><span class="big" id="resultAccuracy">0%</span><br><span id="accuracyLabel">Accuracy</span></div>
+        <div><span class="big" id="resultStreak">0</span><br><span id="bestStreakLabel">Best Streak</span></div>
+      </div>
+      <h3 id="missedLabel">Words to revise</h3>
+      <ul id="resultMissed" class="missed"></ul>
+      <p id="noneMissed" class="muted hidden">Perfect round — nothing missed!</p>
+      <button id="playAgainBtn" class="primary" type="button">Play Again</button>
+    </div>
+  </section>
+
+  <!-- ============ PRACTICE ============ -->
+  <section id="tab-practice" class="panel hidden">
+    <div id="practiceSetup" class="card">
+      <h2 id="practiceTitle">Practice Mode — no lives, no timer, just learning</h2>
+      <label class="field">
+        <span id="practiceLevelLabel">Level</span>
+        <select id="practiceLevel">
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+          <option value="mixed">Mixed</option>
+        </select>
+      </label>
+      <button id="practiceStartBtn" class="primary" type="button">Start Practising</button>
+    </div>
+    <div id="practiceGame" class="card hidden">
+      <p class="muted" id="practiceCount">Practised 0 · 0 words correct</p>
+      <div class="listen-row">
+        <button id="practiceListenBtn" class="primary" type="button">🔊 Listen</button>
+        <button id="practiceFlashBtn" class="secondary" type="button">👁 Flash Word</button>
+      </div>
+      <div id="practiceFlashWord" class="flash-word hidden"></div>
+      <p id="practiceFlashNote" class="muted small hidden">Word flashes for 2 seconds — memorise it, then spell it!</p>
+      <form id="practiceForm">
+        <label class="field">
+          <span id="practiceTypeLabel">Type the spelling here…</span>
+          <input id="practiceInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"
+                 placeholder="Type the spelling here…" maxlength="30">
+        </label>
+        <button id="practiceSubmitBtn" class="primary" type="submit">Check Spelling</button>
+      </form>
+      <div id="practiceFeedback" class="feedback hidden"></div>
+      <button id="practiceNextBtn" class="primary hidden" type="button">Next Word →</button>
+    </div>
+  </section>
+
+  <!-- ============ WORD LIST ============ -->
+  <section id="tab-words" class="panel hidden">
+    <div class="card">
+      <h2 id="wordsTitle">All Words</h2>
+      <div class="filters">
+        <input id="wordSearch" type="search" placeholder="Search English or Bangla…" autocomplete="off">
+        <select id="wordLevel">
+          <option value="all">All</option>
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+      </div>
+      <div class="filters">
+        <button class="chip active" data-filter="all" type="button" id="filterAllBtn">All</button>
+        <button class="chip" data-filter="bookmarked" type="button" id="filterBmBtn">★ Bookmarked</button>
+      </div>
+      <p class="muted small" id="wordsCount"></p>
+      <p class="muted small" id="bookmarkHint">Tap ★ to bookmark a word for revision.</p>
+      <div id="wordList" class="word-list"></div>
+      <p id="wordsEmpty" class="muted hidden">No words match your search.</p>
+    </div>
+  </section>
+
+  <!-- ============ SCORES ============ -->
+  <section id="tab-scores" class="panel hidden">
+    <div class="card">
+      <h2 id="scoresTitle">Your Scores</h2>
+      <div class="result-grid" id="bestGrid">
+        <div><span class="big" id="bestEasy">0</span><br><span>Easy</span></div>
+        <div><span class="big" id="bestMedium">0</span><br><span>Medium</span></div>
+        <div><span class="big" id="bestHard">0</span><br><span>Hard</span></div>
+        <div><span class="big" id="bestMixed">0</span><br><span>Mixed</span></div>
+      </div>
+      <p><span id="roundsPlayedLabel">Rounds Played</span>: <strong id="statRounds">0</strong></p>
+      <p><span id="totalAccuracyLabel">Overall Accuracy</span>: <strong id="statAccuracy">0%</strong></p>
+      <h3 id="historyTitle">Round History</h3>
+      <ul id="historyList" class="history"></ul>
+      <p id="historyEmpty" class="muted">No rounds played yet — start your first round!</p>
+      <div class="btn-row">
+        <button id="exportBtn" class="secondary" type="button">Export Data (JSON)</button>
+        <button id="importBtn" class="secondary" type="button">Import Data</button>
+        <input id="importFile" type="file" accept="application/json,.json" class="hidden">
+        <button id="eraseBtn" class="danger" type="button">Erase All Data</button>
+      </div>
+      <div id="eraseBox" class="erase-box hidden">
+        <p id="eraseConfirm">Type DELETE to erase everything</p>
+        <input id="eraseInput" type="text" autocomplete="off" placeholder="DELETE">
+        <div class="btn-row">
+          <button id="eraseConfirmBtn" class="danger" type="button">Erase</button>
+          <button id="eraseCancelBtn" class="secondary" type="button">Cancel</button>
+        </div>
+      </div>
+      <p id="dataMsg" class="muted small"></p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p id="footerText">Fully offline · No account · Your scores stay on your device · Words are common English words with short Bangla glosses for learners — not exam answers.</p>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/core.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
